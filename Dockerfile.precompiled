@@ -1,0 +1,23 @@
+FROM archlinux/base
+
+WORKDIR /usr/src/app
+
+RUN pacman-key --init && \
+    pacman -Sy --noconfirm archlinux-keyring && \
+    pacman -Su --noconfirm base-devel && \
+    pacman -Scc --noconfirm && \
+    rm -rf /var/cache/pacman/pkg/*
+
+RUN pacman -S --noconfirm python && \
+    pacman -Scc --noconfirm && \
+    rm -rf /var/cache/pacman/pkg/*
+
+ARG QT5=qt5-wasm-5.15.0-4-x86_64.pkg.tar.xz
+ARG SERVER
+
+RUN curl http://$SERVER/$QT5 -o /root/$QT5 && \
+    pacman -U --noconfirm /root/$QT5 && \
+    rm -f /root/$QT5 && \
+    pacman -Scc --noconfirm && \
+    rm -rf /var/cache/pacman/pkg/*
+
